@@ -7,7 +7,7 @@ pipeline {
   stages {
     stage("Application Code Cloning from GitLab"){
       steps{
-         git credentialsId: 'GIT_LAB_CREDENTIALS', url: 'https://gitlab.com/jaya-narayana/srefoundationpipeline.git'
+         git 'https://gitlab.com/jaya-narayana/srefoundationpipeline.git'
       }
     }
     stage('Packeging the Application'){
