@@ -7,7 +7,7 @@ pipeline {
   stages {
     stage("Application Code Cloning from GitLab"){
       steps{
-         git credentialsId: 'GIT_LAB_CREDENTIALS', url: 'https://gitlab.com/sujalmitra/docker-spring-boot-java-web-service.git'
+         git credentialsId: 'GIT_LAB_CREDENTIALS', url: 'https://gitlab.com/jaya-narayana/srefoundationpipeline.git'
       }
     }
     stage('Packeging the Application'){
