@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+ name: test
+ labels:
+   app: spring-boot-app-test
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-boot-application-test
+  namespace: test 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+     app: spring-boot-app-test
+  template:
+    metadata:
+     labels:
+       app: spring-boot-app-test
+    spec:
+     nodeSelector:
+       "beta.kubernetes.io/os": linux
+     containers: 
+     - name: spring-boot-container
+       image: sujal2308/spring-boot-java-web-service:2
+       resources:
+         requests:
+           cpu: 100m
+           memory: 128Mi
+         limits:
+           cpu: 250m
+           memory: 256Mi
+       ports:
+       - containerPort: 8080
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-service
+  namespace: test
+  labels:
+    app: spring-boot-app-test
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    targetPort: 8080
+    protocol: TCP
+  selector:
+    app: spring-boot-app-test
+
+---
+
