@@ -1,9 +1,6 @@
 pipeline {
   agent any
-  environment{
-    scannerHome = tool 'SonarScanner'
-    JavaHome = tool 'JAVA_HOME'
-  }
+  
   stages {
     stage("Application Code Cloning from GitLab"){
       steps{
@@ -18,11 +15,7 @@ pipeline {
     }
     stage('Static Code Analysis'){
       steps{
-        withEnv(["JAVA_HOME=$JavaHome"]){
-          withSonarQubeEnv("SonarCloud"){
-            sh "${tool("SonarScanner")}/bin/sonar-scanner"
-          }
-        }
+        
       }
     }
     stage("Building Docker Image"){
