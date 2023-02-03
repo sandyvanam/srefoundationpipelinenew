@@ -29,12 +29,12 @@ pipeline {
     }
     stage("Push Image to Docker Hub"){
       steps{
-         withCredentials([string(credentialsId: 'DOCKER_HUB_CREDENTIALS', variable: 'PASSWORD')]){
-           sh 'docker login -u sujal2308 -p $PASSWORD'
-           sh 'docker push sujal2308/spring-boot-java-web-service:$BUILD_NUMBER'
+         withCredentials([string(credentialsId: 'DOCKER_HUB_CREDENTIALS', variable: 'PASSWORD', variable: 'USERNAME')]){
+           sh 'docker login -u $USERNAME -p $PASSWORD'
+           sh 'docker push $USERNAME/spring-boot-java-web-service:$BUILD_NUMBER'
            sh 'docker image rm spring-boot-image:latest'
-           sh 'docker image rm sujal2308/spring-boot-java-web-service:latest'
-           sh 'docker image rm sujal2308/spring-boot-java-web-service:$BUILD_NUMBER'
+           sh 'docker image rm $USERNAME/spring-boot-java-web-service:latest'
+           sh 'docker image rm $USERNAME/spring-boot-java-web-service:$BUILD_NUMBER'
          }
       }
     }
