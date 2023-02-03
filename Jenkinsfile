@@ -16,7 +16,7 @@ pipeline {
     stage('Static Code Analysis'){
       steps{
         
-        }
+        
       }
     }
     stage("Building Docker Image"){
