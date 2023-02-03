@@ -15,7 +15,7 @@ pipeline {
     }
     stage('Static Code Analysis'){
       steps{
-        
+        echo "Stage Completed"
         
       }
     }
