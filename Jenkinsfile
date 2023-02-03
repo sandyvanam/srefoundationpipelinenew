@@ -1,5 +1,11 @@
+def dockeruser = "jaya9969"
 pipeline {
   agent any
+  environment{
+      DOCKER_HUB_CREDENTIALS=credentials('DOCKER_HUB_CREDENTIALS')
+      dockeruser = "jaya9969"
+      dockerpass = "Arjun@123"
+  }
   
   stages {
     stage("Application Code Cloning from GitLab"){
@@ -23,39 +29,49 @@ pipeline {
       steps{
          sh 'docker build -t spring-boot-image .'
          sh 'docker image list'
-         sh 'docker tag spring-boot-image sujal2308/spring-boot-java-web-service:latest'
-         sh 'docker tag spring-boot-image sujal2308/spring-boot-java-web-service:$BUILD_NUMBER'
+         sh 'docker tag spring-boot-image ${dockeruser}/spring-boot-java-web-service:latest'
+         sh 'docker tag spring-boot-image ${dockeruser}/spring-boot-java-web-service:$BUILD_NUMBER'
       }
     }
     stage("Push Image to Docker Hub"){
       steps{
-         withCredentials([string(credentialsId: 'DOCKER_HUB_CREDENTIALS', variable: 'PASSWORD', variable: 'USERNAME')]){
-           sh 'docker login -u $USERNAME -p $PASSWORD'
-           sh 'docker push $USERNAME/spring-boot-java-web-service:$BUILD_NUMBER'
+            
+           sh 'docker login -u ${dockeruser} -p ${dockerpass}'
+           sh 'docker push ${dockeruser}/spring-boot-java-web-service:$BUILD_NUMBER'
            sh 'docker image rm spring-boot-image:latest'
-           sh 'docker image rm $USERNAME/spring-boot-java-web-service:latest'
-           sh 'docker image rm $USERNAME/spring-boot-java-web-service:$BUILD_NUMBER'
-         }
+           sh 'docker image rm ${dockeruser}/spring-boot-java-web-service:latest'
+           sh 'docker image rm ${dockeruser}/spring-boot-java-web-service:$BUILD_NUMBER'
+         
       }
     }
+    
     stage('Deploying Application in "Development" Environment'){
       steps{
+          sh "sed -i 's/DOCKERUSER/${dockeruser}/g' deployment_dev.yaml"
+          sh "sed -i 's/BUILD_NUMBER/$BUILD_NUMBER/g' deployment_dev.yaml"
          script{
-           sh "kubectl apply -f deployment_dev.yaml"
+            sh "sudo /usr/local/bin/kubectl  delete -f deployment_dev.yaml"
+            sh "sudo /usr/local/bin/kubectl  apply -f deployment_dev.yaml"
          }
       }
     }
     stage('Deploying Application in "Test" Environment'){
       steps{
+          sh "sed -i 's/DOCKERUSER/${dockeruser}/g' deployment_test.yaml"
+          sh "sed -i 's/BUILD_NUMBER/$BUILD_NUMBER/g' deployment_test.yaml"
         script{
-           sh "kubectl apply -f deployment_test.yaml"
+            sh "sudo /usr/local/bin/kubectl delete -f deployment_test.yaml"
+            sh "sudo /usr/local/bin/kubectl apply -f deployment_test.yaml"
         }
       }
     }
     stage('Deploying Application in "Production" Environment'){
       steps{
+          sh "sed -i 's/DOCKERUSER/${dockeruser}/g' deployment_production.yaml"
+          sh "sed -i 's/BUILD_NUMBER/$BUILD_NUMBER/g' deployment_production.yaml"
         script{
-           sh "kubectl apply -f deployment_production.yaml"
+            sh "sudo /usr/local/bin/kubectl delete -f deployment_production.yaml"
+            sh "sudo /usr/local/bin/kubectl apply -f deployment_production.yaml"
         }
       }
     }
