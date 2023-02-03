@@ -1,10 +1,10 @@
-def dockeruser = "jaya9969"
+
 pipeline {
   agent any
   environment{
-      DOCKER_HUB_CREDENTIALS=credentials('DOCKER_HUB_CREDENTIALS')
-      dockeruser = "jaya9969"
-      dockerpass = "Arjun@123"
+     
+      dockeruser = "${params.dockeruser}"
+      dockerpass = "${params.dockerpass}"
   }
   
   stages {
