@@ -1,4 +1,3 @@
-
 pipeline {
   agent any
   environment{
@@ -50,8 +49,7 @@ pipeline {
           sh "sed -i 's/DOCKERUSER/${dockeruser}/g' deployment_dev.yaml"
           sh "sed -i 's/BUILD_NUMBER/$BUILD_NUMBER/g' deployment_dev.yaml"
          script{
-            sh "sudo /usr/local/bin/kubectl  delete -f deployment_dev.yaml"
-            sh "sudo /usr/local/bin/kubectl  apply -f deployment_dev.yaml"
+                        sh "sudo /usr/local/bin/kubectl  apply -f deployment_dev.yaml"
          }
       }
     }
@@ -60,8 +58,7 @@ pipeline {
           sh "sed -i 's/DOCKERUSER/${dockeruser}/g' deployment_test.yaml"
           sh "sed -i 's/BUILD_NUMBER/$BUILD_NUMBER/g' deployment_test.yaml"
         script{
-            sh "sudo /usr/local/bin/kubectl delete -f deployment_test.yaml"
-            sh "sudo /usr/local/bin/kubectl apply -f deployment_test.yaml"
+                        sh "sudo /usr/local/bin/kubectl apply -f deployment_test.yaml"
         }
       }
     }
@@ -70,8 +67,7 @@ pipeline {
           sh "sed -i 's/DOCKERUSER/${dockeruser}/g' deployment_production.yaml"
           sh "sed -i 's/BUILD_NUMBER/$BUILD_NUMBER/g' deployment_production.yaml"
         script{
-            sh "sudo /usr/local/bin/kubectl delete -f deployment_production.yaml"
-            sh "sudo /usr/local/bin/kubectl apply -f deployment_production.yaml"
+                        sh "sudo /usr/local/bin/kubectl apply -f deployment_production.yaml"
         }
       }
     }
